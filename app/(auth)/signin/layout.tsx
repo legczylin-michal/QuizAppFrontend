@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Log In",
+    title: "Sign in | QuizApp",
 };
 
-export default function LogInLayout({ children, }: Readonly<{ children: React.ReactNode }>) {
+export default function SignInLayout({ children, }: Readonly<{ children: React.ReactNode }>) {
     return (
         <section>
             {children}
