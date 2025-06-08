@@ -32,5 +32,17 @@ export type FormState =
             password?: string[]
         }
         message?: string
+        success?: boolean
+        email?: string
+        password?: string
     }
     | undefined
+
+// Add this interface here
+export interface AuthResult {
+    success?: boolean
+    message?: string
+    errors?: Record<string, string[]>
+    email?: string
+    password?: string
+}
