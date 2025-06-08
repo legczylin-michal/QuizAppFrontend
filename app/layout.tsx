@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "./header";
+import { isAuth } from "./lib/dal";
+import Header from "./ui/headers";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -17,14 +18,17 @@ export const metadata: Metadata = {
 	title: "Welcome | QuizApp",
 };
 
-export default function RootLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
+
+export default async function RootLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
+	let isLogged = await isAuth();
+
 	return (
 		<html lang="en">
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-white`}>
-				<Header></Header>
+				<Header loggedIn={isLogged}></Header>
 
 				<main>{children}</main>
-				
+
 				<footer></footer>
 			</body>
 		</html>

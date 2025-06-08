@@ -14,7 +14,7 @@ import {
 
 import Link from 'next/link';
 
-export default function Header() {
+export default function Header({ loggedIn, }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     return (
@@ -44,15 +44,28 @@ export default function Header() {
                     </a>
                 </div>
 
-                <div className="hidden lg:flex lg:gap-x-12 lg:flex-1 lg:justify-end">
-                    <Link href={'/signup'} className="text-sm/6 font-semibold text-gray-900">
-                        Sign up
-                    </Link>
+                {loggedIn
+                    ?
+                    <div className="hidden lg:flex lg:gap-x-12 lg:flex-1 lg:justify-end">
+                        <Link href={'/signup'} className="text-sm/6 font-semibold text-gray-900">
+                            My profile
+                        </Link>
 
-                    <Link href={'/signin'} className="text-sm/6 font-semibold text-gray-900">
-                        Sign in
-                    </Link>
-                </div>
+                        <Link href={'/signin'} className="text-sm/6 font-semibold text-gray-900">
+                            Sign out
+                        </Link>
+                    </div>
+                    :
+                    <div className="hidden lg:flex lg:gap-x-12 lg:flex-1 lg:justify-end">
+                        <Link href={'/signup'} className="text-sm/6 font-semibold text-gray-900">
+                            Sign up
+                        </Link>
+
+                        <Link href={'/signin'} className="text-sm/6 font-semibold text-gray-900">
+                            Sign in
+                        </Link>
+                    </div>
+                }
             </nav>
 
             <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
@@ -85,15 +98,28 @@ export default function Header() {
                                 </a>
                             </div>
 
-                            <div className="py-6">
-                                <Link href={'/signup'} className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
-                                    Sign Up
-                                </Link>
+                            {loggedIn
+                                ?
+                                <div className="py-6">
+                                    <Link href={'/signup'} className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
+                                        My profile
+                                    </Link>
 
-                                <Link href={'/signin'} className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
-                                    Sign In
-                                </Link>
-                            </div>
+                                    <Link href={'/signin'} className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
+                                        Sign out
+                                    </Link>
+                                </div>
+                                :
+                                <div className="py-6">
+                                    <Link href={'/signup'} className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
+                                        Sign Up
+                                    </Link>
+
+                                    <Link href={'/signin'} className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
+                                        Sign In
+                                    </Link>
+                                </div>
+                            }
                         </div>
                     </div>
                 </DialogPanel>
