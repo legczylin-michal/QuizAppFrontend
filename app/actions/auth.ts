@@ -1,15 +1,22 @@
-'use server';
+'use server'
 
 import { redirect } from 'next/navigation'
+import { SignupFormSchema, SigninFormSchema, FormState, AuthResult } from '@/app/lib/definitions'
 
-import { SignupFormSchema, SigninFormSchema, FormState } from '@/app/lib/definitions';
-import { createSession, deleteSession } from '../lib/session';
+// Remove this duplicate interface declaration:
+// interface AuthResult {
+//     success?: boolean
+//     message?: string
+//     errors?: Record<string, string[]>
+//     email?: string
+//     password?: string
+// }
 
-export async function signin(state: FormState, formData: FormData) {
+export async function signin(state: FormState, formData: FormData): Promise<AuthResult> {
     const validatedFields = SigninFormSchema.safeParse({
         email: formData.get('email'),
         password: formData.get('password'),
-    });
+    })
 
     if (!validatedFields.success) {
         return {
@@ -17,59 +24,40 @@ export async function signin(state: FormState, formData: FormData) {
         }
     }
 
-    const { email, password } = validatedFields.data;
+    const { email, password } = validatedFields.data
 
-    const lookForTokenIdData: Record<string, string> = {};
-    lookForTokenIdData['email'] = email;
-    lookForTokenIdData['password'] = password;
-    lookForTokenIdData['returnSecureToken'] = 'true';
+    try {
+        // Change this URL to your login endpoint
+        const signinResponse = await fetch('http://localhost:5000/login', { // Changed from /register to /login
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }), // Your backend might expect different format
+        })
 
-    const lookForTokenIdResponse = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyB4aWqGdfJta2x0uvgHyGBrC6P2ioVF09M', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(lookForTokenIdData),
-    });
+        if (!signinResponse.ok) {
+            const errorData = await signinResponse.json()
+            return {
+                message: errorData.error || 'An error occurred while signing in.',
+            }
+        }
 
-    const lookForTokenIdResult = await lookForTokenIdResponse.json();
+        return { success: true, email, password }
 
-    if (!lookForTokenIdResponse.ok) {
+    } catch (error) {
         return {
-            message: 'An error occurred while looking for account with such credentials.',
+            message: 'An error occurred while signing in.',
         }
     }
-
-    const signinData: Record<string, string> = {};
-    signinData['idToken'] = lookForTokenIdResult.idToken;
-
-    const signinResponse = await fetch('http://localhost:5000/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(signinData),
-    });
-
-    const signinResult = await signinResponse.json();
-
-    if (!signinResponse.ok) {
-        return {
-            message: 'An error occurred while validating id token.',
-        }
-    }
-
-    createSession(signinResult.uid);
-
-    redirect('/');
 }
 
-export async function signup(state: FormState, formData: FormData) {
+export async function signup(state: FormState, formData: FormData): Promise<AuthResult> {
     const validatedFields = SignupFormSchema.safeParse({
         username: formData.get('username'),
         email: formData.get('email'),
         password: formData.get('password'),
-    });
+    })
 
     if (!validatedFields.success) {
         return {
@@ -77,37 +65,36 @@ export async function signup(state: FormState, formData: FormData) {
         }
     }
 
-    const { username, email, password } = validatedFields.data;
+    const { username, email, password } = validatedFields.data
 
-    const plainData: Record<string, string> = {};
-    plainData['username'] = username;
-    plainData['email'] = email;
-    plainData['password'] = password;
+    try {
+        const response = await fetch('http://localhost:5000/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+        })
 
-    const response = await fetch('http://localhost:5000/register', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(plainData),
-    });
+        if (!response.ok) {
+            const errorData = await response.json()
+            return {
+                message: errorData.error || 'An error occurred while creating your account.',
+            }
+        }
 
-    const data = await response.json();
+        const data = await response.json()
+        console.log('Registration successful:', data)
 
-    if (!response.ok) {
+        return { success: true, email, password }
+
+    } catch (error) {
         return {
             message: 'An error occurred while creating your account.',
         }
     }
-
-    console.log(data);
-
-    createSession(data.uid);
-
-    redirect('/');
 }
 
 export async function logout() {
-    await deleteSession();
-    redirect('/signin');
+    redirect('/signin')
 }

@@ -1,13 +1,56 @@
 'use client'
 
-import { signin } from '@/app/actions/auth'
-import { useActionState } from 'react'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { auth } from '@/app/lib/firebase'
 
 export default function SigninForm() {
-    const [state, action, pending] = useActionState(signin, undefined)
+    const [error, setError] = useState<string>('')
+    const [isProcessing, setIsProcessing] = useState(false)
+    const router = useRouter()
+
+    async function handleSubmit(formData: FormData) {
+        setError('')
+        setIsProcessing(true)
+
+        const email = formData.get('email') as string
+        const password = formData.get('password') as string
+
+        try {
+            // Sign in directly with Firebase - no backend validation needed
+            await signInWithEmailAndPassword(auth, email, password)
+            
+            // Redirect to home page after successful auth
+            router.push('/')
+
+        } catch (firebaseError: any) {
+            console.error('Firebase signin error:', firebaseError)
+            
+            // Handle common Firebase auth errors
+            switch (firebaseError.code) {
+                case 'auth/user-not-found':
+                    setError('No account found with this email address.')
+                    break
+                case 'auth/wrong-password':
+                    setError('Incorrect password.')
+                    break
+                case 'auth/invalid-email':
+                    setError('Invalid email address.')
+                    break
+                case 'auth/user-disabled':
+                    setError('This account has been disabled.')
+                    break
+                default:
+                    setError('Failed to sign in. Please check your credentials.')
+            }
+        } finally {
+            setIsProcessing(false)
+        }
+    }
 
     return (
-        <form action={action} className="space-y-6">
+        <form action={handleSubmit} className="space-y-6">
             <div>
                 <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
                     Email address
@@ -25,7 +68,6 @@ export default function SigninForm() {
                     />
                 </div>
             </div>
-            {state?.errors?.email && <p>{state.errors.email}</p>}
 
             <div>
                 <div className="flex items-center justify-between">
@@ -51,23 +93,20 @@ export default function SigninForm() {
                     />
                 </div>
             </div>
-            {state?.errors?.password && (
-                <div>
-                    <p>Password must:</p>
-                    <ul>
-                        {state.errors.password.map((error) => (
-                            <li key={error}>- {error}</li>
-                        ))}
-                    </ul>
+
+            {error && (
+                <div className="text-red-600 text-sm">
+                    {error}
                 </div>
             )}
+
             <div>
                 <button
                     type="submit"
-                    className="flex w-full justify-center rounded-md bg-gray-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-600"
-                    disabled={pending}
+                    className="flex w-full justify-center rounded-md bg-gray-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-gray-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus:outline-indigo-600"
+                    disabled={isProcessing}
                 >
-                    Sign in
+                    {isProcessing ? 'Signing in...' : 'Sign in'}
                 </button>
             </div>
         </form>
