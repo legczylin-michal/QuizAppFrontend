@@ -94,6 +94,46 @@ export async function createItem(setId: string, term: string, definition: string
 }
 
 
+export async function getItem(setId: string, itemId: string) {
+  const user = auth.currentUser
+  if (!user) throw new Error('Not authenticated')
+  const token = await user.getIdToken()
+  const response = await fetch(`http://localhost:5000/sets/${setId}/items/${itemId}`, {
+    headers: { 'Authorization': `Bearer ${token}` },
+  })
+  if (!response.ok) throw new Error('Failed to fetch item')
+  return response.json()
+}
+
+export async function updateItem(setId: string, itemId: string, term: string, definition: string) {
+  const user = auth.currentUser
+  if (!user) throw new Error('Not authenticated')
+  const token = await user.getIdToken()
+  const response = await fetch(`http://localhost:5000/sets/${setId}/items/${itemId}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ term, definition }),
+  })
+  if (!response.ok) throw new Error('Failed to update item')
+  return response.json()
+}
+
+export async function deleteItem(setId: string, itemId: string) {
+  const user = auth.currentUser
+  if (!user) throw new Error('Not authenticated')
+  const token = await user.getIdToken()
+  const response = await fetch(`http://localhost:5000/sets/${setId}/items/${itemId}`, {
+    method: 'DELETE',
+    headers: { 'Authorization': `Bearer ${token}` },
+  })
+  if (!response.ok) throw new Error('Failed to delete item')
+  return response.json()
+}
+
+
 // // Set management functions
 // export async function createSet(title: string, description: string) {
 //     return makeAuthenticatedRequest('http://localhost:8080/sets', {

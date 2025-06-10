@@ -7,6 +7,7 @@ import ItemForm from '@/app/ui/item-form'
 import { auth } from '@/app/lib/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 import type { Item } from '@/app/lib/definitions'
+import Link from 'next/link'
 
 export default function ItemsPage({ params }: { params: Promise<{ setId: string }> }) {
     const { setId } = use(params)
@@ -61,6 +62,7 @@ export default function ItemsPage({ params }: { params: Promise<{ setId: string 
         throw err
     }
     }
+    
     const filteredItems = items.filter(item =>
     item.term.toLowerCase().includes(searchTerm.toLowerCase())
   )
@@ -88,11 +90,14 @@ export default function ItemsPage({ params }: { params: Promise<{ setId: string 
         ) : (
           <ul className="space-y-2">
             {filteredItems.map((item) => (
+                
               <li
                 key={item.id}
                 className="p-3 border rounded bg-gray-50"
               >
-                <div className="font-medium">{item.term}</div>
+                <Link href={`/sets/${setId}/items/${item.id}`}>
+                    <div className="font-medium cursor-pointer text-blue-700 hover:underline">{item.term}</div>
+                </Link>
                 <div className="text-gray-600">{item.definition}</div>
               </li>
             ))}

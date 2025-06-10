@@ -48,7 +48,8 @@ export interface AuthResult {
 }
 
 export interface Item {
-    id: string
-    name: string
-    description: string
+  id: string
+  term: string
+  definition: string
+  owner_id?: string // optional, if you use it
 }
