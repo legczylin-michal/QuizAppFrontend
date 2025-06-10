@@ -110,6 +110,9 @@ export default function ItemsPage({ params }: { params: Promise<{ setId: string 
                     <Link href={`/sets/${setId}/edit`} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
                         Edit
                     </Link>
+                    <Link href={`/sets/${setId}/learn`} className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+                        Learn
+                    </Link>
 
                     <button
                         className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
