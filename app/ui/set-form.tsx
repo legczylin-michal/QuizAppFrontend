@@ -1,35 +1,30 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from "next/link"
 
-interface ItemFormProps {
-    onSubmit: (term: string, definition: string) => Promise<void>
+interface SetFormProps {
+    onSubmit: (title: string, description: string) => Promise<void>
     error?: string | null
-    initialTerm?: string
-    initialDefinition?: string
+    initialTitle?: string
+    initialDescription?: string
 }
 
-export default function ItemForm({
-    onSubmit,
-    error,
-    initialTerm = '',
-    initialDefinition = '',
-}: ItemFormProps) {
-    const [term, setTerm] = useState(initialTerm)
-    const [definition, setDefinition] = useState(initialDefinition)
+export default function SetForm({ onSubmit, error, initialTitle = '', initialDescription = '' }: SetFormProps) {
+    const [title, setTitle] = useState(initialTitle)
+    const [description, setDescription] = useState(initialDescription)
     const [isSubmitting, setIsSubmitting] = useState(false)
 
-    // Update form fields if initial values change (for edit)
     useEffect(() => {
-        setTerm(initialTerm)
-        setDefinition(initialDefinition)
-    }, [initialTerm, initialDefinition])
+        setTitle(initialTitle)
+        setDescription(initialDescription)
+    }, [initialTitle, initialDescription])
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setIsSubmitting(true)
         try {
-            await onSubmit(term, definition)
+            await onSubmit(title, description)
         } finally {
             setIsSubmitting(false)
         }
@@ -39,18 +34,18 @@ export default function ItemForm({
         <form onSubmit={handleSubmit} className="mb-6 space-y-2">
             <input
                 type="text"
-                placeholder="Term"
+                placeholder="Title"
                 className="w-full p-2 border rounded"
-                value={term}
-                onChange={e => setTerm(e.target.value)}
+                value={title}
+                onChange={e => setTitle(e.target.value)}
                 required
                 disabled={isSubmitting}
             />
             <textarea
-                placeholder="Definition"
+                placeholder="Description"
                 className="w-full p-2 border rounded"
-                value={definition}
-                onChange={e => setDefinition(e.target.value)}
+                value={description}
+                onChange={e => setDescription(e.target.value)}
                 required
                 disabled={isSubmitting}
             />

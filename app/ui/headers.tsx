@@ -65,9 +65,9 @@ export default function Header() {
                         Home
                     </Link>
 
-                    <a href="#" className="text-sm/6 font-semibold text-gray-900">
+                    <Link href={'/sets'} className="text-sm/6 font-semibold text-gray-900">
                         Sets
-                    </a>
+                    </Link>
 
                     <a href="#" className="text-sm/6 font-semibold text-gray-900">
                         Friends
@@ -81,7 +81,7 @@ export default function Header() {
                             {user.email}
                         </span>
 
-                        <button 
+                        <button
                             onClick={handleSignOut}
                             className="text-sm/6 font-semibold text-gray-900 hover:text-gray-600"
                         >
@@ -121,9 +121,9 @@ export default function Header() {
                                     Home
                                 </Link>
 
-                                <a href="#" className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
+                                <Link href={'/sets'} className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
                                     Sets
-                                </a>
+                                </Link>
 
                                 <a href="#" className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">
                                     Friends
@@ -137,7 +137,7 @@ export default function Header() {
                                         {user.email}
                                     </span>
 
-                                    <button 
+                                    <button
                                         onClick={handleSignOut}
                                         className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-gray-900 hover:bg-gray-50 w-full text-left"
                                     >
