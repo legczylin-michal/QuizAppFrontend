@@ -69,9 +69,9 @@ export default function Header() {
                         Sets
                     </Link>
 
-                    <a href="#" className="text-sm/6 font-semibold text-gray-900">
+                    {/* <a href="#" className="text-sm/6 font-semibold text-gray-900">
                         Friends
-                    </a>
+                    </a> */}
                 </div>
 
                 {user
