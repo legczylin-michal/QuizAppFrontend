@@ -35,7 +35,7 @@ export async function makeAuthenticatedRequest(url: string, options: RequestInit
 
 // API functions for your Flask backend
 export async function registerUser(email: string, password: string) {
-    return fetch('http://localhost:5000/register', {
+    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -43,7 +43,7 @@ export async function registerUser(email: string, password: string) {
 }
 
 export async function loginUser(idToken: string) {
-    return fetch('http://localhost:5000/login', {
+    return fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ idToken })
@@ -54,7 +54,7 @@ export async function getItems(setId: string) {
     const user = auth.currentUser
     if (!user) throw new Error('Not authenticated')
     const token = await user.getIdToken()
-    const response = await fetch(`http://localhost:5000/sets/${setId}/items`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sets/${setId}/items`, {
         headers: { 'Authorization': `Bearer ${token}` }
     })
     if (!response.ok) throw new Error('Failed to fetch items')
@@ -66,7 +66,7 @@ export async function createItem(setId: string, term: string, definition: string
     if (!user) throw new Error('Not authenticated')
 
     const token = await user.getIdToken()
-    const response = await fetch(`http://localhost:5000/sets/${setId}/items`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sets/${setId}/items`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -84,7 +84,7 @@ export async function createItem(setId: string, term: string, definition: string
     const { item_id } = await response.json()
 
     // Fetch the full item details
-    const itemResponse = await fetch(`http://localhost:5000/sets/${setId}/items/${item_id}`, {
+    const itemResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sets/${setId}/items/${item_id}`, {
         headers: { 'Authorization': `Bearer ${token}` }
     })
 
@@ -97,7 +97,7 @@ export async function getItem(setId: string, itemId: string) {
     const user = auth.currentUser
     if (!user) throw new Error('Not authenticated')
     const token = await user.getIdToken()
-    const response = await fetch(`http://localhost:5000/sets/${setId}/items/${itemId}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sets/${setId}/items/${itemId}`, {
         headers: { 'Authorization': `Bearer ${token}` },
     })
     if (!response.ok) throw new Error('Failed to fetch item')
@@ -108,7 +108,7 @@ export async function updateItem(setId: string, itemId: string, term: string, de
     const user = auth.currentUser
     if (!user) throw new Error('Not authenticated')
     const token = await user.getIdToken()
-    const response = await fetch(`http://localhost:5000/sets/${setId}/items/${itemId}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sets/${setId}/items/${itemId}`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -124,7 +124,7 @@ export async function deleteItem(setId: string, itemId: string) {
     const user = auth.currentUser
     if (!user) throw new Error('Not authenticated')
     const token = await user.getIdToken()
-    const response = await fetch(`http://localhost:5000/sets/${setId}/items/${itemId}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sets/${setId}/items/${itemId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` },
     })
@@ -137,7 +137,7 @@ export async function getSets() {
     if (!user) throw new Error('Not authenticated')
 
     const token = await user.getIdToken()
-    const response = await fetch(`http://localhost:5000/sets`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sets`, {
         headers: { 'Authorization': `Bearer ${token}` }
     })
 
@@ -152,7 +152,7 @@ export async function createSet(title: string, description: string): Promise<Set
     if (!user) throw new Error('Not authenticated')
 
     const token = await user.getIdToken()
-    const response = await fetch(`http://localhost:5000/sets`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sets`, {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -176,7 +176,7 @@ export async function getSet(setId: string) {
     if (!user) throw new Error('Not authenticated')
 
     const token = await user.getIdToken()
-    const response = await fetch(`http://localhost:5000/sets/${setId}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sets/${setId}`, {
         headers: { 'Authorization': `Bearer ${token}` },
     })
 
@@ -190,7 +190,7 @@ export async function updateSet(setId: string, title: string, description: strin
     if (!user) throw new Error('Not authenticated')
 
     const token = await user.getIdToken()
-    const response = await fetch(`http://localhost:5000/sets/${setId}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sets/${setId}`, {
         method: 'PUT',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -209,7 +209,7 @@ export async function deleteSet(setId: string) {
     if (!user) throw new Error('Not authenticated')
 
     const token = await user.getIdToken()
-    const response = await fetch(`http://localhost:5000/sets/${setId}`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sets/${setId}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${token}` },
     })
