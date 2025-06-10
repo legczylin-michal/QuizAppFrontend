@@ -1,11 +1,7 @@
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-    title: "Set | QuizApp",
-};
-
-export default function SignupLayout({ children, }: Readonly<{ children: React.ReactNode; }>) {
-    return (
-        <section>{children}</section>
-    );
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="max-w-3xl mx-auto">
+      {children}
+    </div>
+  )
 }

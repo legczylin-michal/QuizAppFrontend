@@ -93,7 +93,6 @@ export async function createItem(setId: string, term: string, definition: string
     return itemResponse.json()
 }
 
-
 export async function getItem(setId: string, itemId: string) {
     const user = auth.currentUser
     if (!user) throw new Error('Not authenticated')
@@ -133,6 +132,19 @@ export async function deleteItem(setId: string, itemId: string) {
     return response.json()
 }
 
+export async function getSets() {
+    const user = auth.currentUser
+    if (!user) throw new Error('Not authenticated')
+
+    const token = await user.getIdToken()
+    const response = await fetch(`http://localhost:5000/sets`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    })
+
+    if (!response.ok) throw new Error('Failed to fetch sets')
+
+    return response.json()
+}
 
 // Set management functions
 export async function createSet(title: string, description: string): Promise<Set> {
@@ -159,54 +171,50 @@ export async function createSet(title: string, description: string): Promise<Set
     return { id: set_id, title: title, description: description }
 }
 
-export async function getSets() {
+export async function getSet(setId: string) {
     const user = auth.currentUser
     if (!user) throw new Error('Not authenticated')
 
     const token = await user.getIdToken()
-    const response = await fetch(`http://localhost:5000/sets`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+    const response = await fetch(`http://localhost:5000/sets/${setId}`, {
+        headers: { 'Authorization': `Bearer ${token}` },
     })
-    
-    if (!response.ok) throw new Error('Failed to fetch sets')
+
+    if (!response.ok) throw new Error('Failed to fetch item')
 
     return response.json()
 }
 
-// export async function updateSet(setId: string, title: string, description: string) {
-//     return makeAuthenticatedRequest(`http://localhost:8080/sets/${setId}`, {
-//         method: 'PUT',
-//         body: JSON.stringify({ title, description })
-//     })
-// }
+export async function updateSet(setId: string, title: string, description: string) {
+    const user = auth.currentUser
+    if (!user) throw new Error('Not authenticated')
 
-// export async function deleteSet(setId: string) {
-//     return makeAuthenticatedRequest(`http://localhost:8080/sets/${setId}`, {
-//         method: 'DELETE'
-//     })
-// }
+    const token = await user.getIdToken()
+    const response = await fetch(`http://localhost:5000/sets/${setId}`, {
+        method: 'PUT',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title, description }),
+    })
 
-// // Item management functions
-// export async function createItem(setId: string, term: string, definition: string) {
-//     return makeAuthenticatedRequest(`http://localhost:8080/sets/${setId}/items`, {
-//         method: 'POST',
-//         body: JSON.stringify({ term, definition })
-//     })
-// }
+    if (!response.ok) throw new Error('Failed to update set')
 
-// export async function getItems(setId: string) {
-//     return makeAuthenticatedRequest(`http://localhost:8080/sets/${setId}/items`)
-// }
+    return response.json()
+}
 
-// export async function updateItem(setId: string, itemId: string, term: string, definition: string) {
-//     return makeAuthenticatedRequest(`http://localhost:8080/sets/${setId}/items/${itemId}`, {
-//         method: 'PUT',
-//         body: JSON.stringify({ term, definition })
-//     })
-// }
+export async function deleteSet(setId: string) {
+    const user = auth.currentUser
+    if (!user) throw new Error('Not authenticated')
 
-// export async function deleteItem(setId: string, itemId: string) {
-//     return makeAuthenticatedRequest(`http://localhost:8080/sets/${setId}/items/${itemId}`, {
-//         method: 'DELETE'
-//     })
-// }
+    const token = await user.getIdToken()
+    const response = await fetch(`http://localhost:5000/sets/${setId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` },
+    })
+
+    if (!response.ok) throw new Error('Failed to delete set')
+
+    return response.json()
+}
