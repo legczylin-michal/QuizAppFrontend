@@ -10,7 +10,12 @@ interface SetFormProps {
     initialDescription?: string
 }
 
-export default function SetForm({ onSubmit, error, initialTitle = '', initialDescription = '' }: SetFormProps) {
+export default function SetForm({
+    onSubmit,
+    error,
+    initialTitle = '',
+    initialDescription = ''
+}: SetFormProps) {
     const [title, setTitle] = useState(initialTitle)
     const [description, setDescription] = useState(initialDescription)
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -25,6 +30,8 @@ export default function SetForm({ onSubmit, error, initialTitle = '', initialDes
         setIsSubmitting(true)
         try {
             await onSubmit(title, description)
+            setTitle('')         // Clear title input
+            setDescription('')   // Clear description input
         } finally {
             setIsSubmitting(false)
         }
@@ -49,7 +56,6 @@ export default function SetForm({ onSubmit, error, initialTitle = '', initialDes
                 required
                 disabled={isSubmitting}
             />
-            
             <button
                 type="submit"
                 className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"

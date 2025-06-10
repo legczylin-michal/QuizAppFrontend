@@ -57,7 +57,12 @@ export async function getItems(setId: string) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/sets/${setId}/items`, {
         headers: { 'Authorization': `Bearer ${token}` }
     })
-    if (!response.ok) throw new Error('Failed to fetch items')
+    if (!response.ok) {
+        if (response.status === 404) {
+            return [] 
+        }// Return empty array if no items found
+        throw new Error('Failed to fetch items')
+    }
     return response.json()
 }
 
@@ -141,8 +146,12 @@ export async function getSets() {
         headers: { 'Authorization': `Bearer ${token}` }
     })
 
-    if (!response.ok) throw new Error('Failed to fetch sets')
-
+    if (!response.ok) {
+        if (response.status === 404) {
+            return [] 
+        }// Return empty array if no items found
+        throw new Error('Failed to fetch items')
+    }
     return response.json()
 }
 

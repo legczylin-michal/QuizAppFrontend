@@ -26,14 +26,17 @@ export default function ItemForm({
     }, [initialTerm, initialDefinition])
 
     const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault()
-        setIsSubmitting(true)
-        try {
-            await onSubmit(term, definition)
-        } finally {
-            setIsSubmitting(false)
-        }
+    e.preventDefault()
+    setIsSubmitting(true)
+    try {
+        await onSubmit(term, definition)
+        setTerm('')
+        setDefinition('')
+    } finally {
+        setIsSubmitting(false)
     }
+}
+
 
     return (
         <form onSubmit={handleSubmit} className="mb-6 space-y-2">
