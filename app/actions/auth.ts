@@ -28,7 +28,7 @@ export async function signin(state: FormState, formData: FormData): Promise<Auth
 
     try {
         // Change this URL to your login endpoint
-        const signinResponse = await fetch('http://localhost:5000/login', { // Changed from /register to /login
+        const signinResponse = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, { // Changed from /register to /login
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ export async function signup(state: FormState, formData: FormData): Promise<Auth
     const { username, email, password } = validatedFields.data
 
     try {
-        const response = await fetch('http://localhost:5000/register', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
