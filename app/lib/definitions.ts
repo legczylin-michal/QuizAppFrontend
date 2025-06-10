@@ -46,3 +46,10 @@ export interface AuthResult {
     email?: string
     password?: string
 }
+
+export interface Item {
+  id: string
+  term: string
+  definition: string
+  owner_id?: string // optional, if you use it
+}
