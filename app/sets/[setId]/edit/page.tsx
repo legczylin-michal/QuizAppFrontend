@@ -6,6 +6,7 @@ import { getSet, updateSet } from '@/app/lib/dal'
 import ItemForm from '@/app/ui/item-form'
 import { useRouter } from 'next/navigation'
 import SetForm from '@/app/ui/set-form'
+import Link from 'next/link'
 
 export default function EditSetPage({ params, }: { params: Promise<{ setId: string }> }) {
     const { setId } = use(params)
@@ -52,6 +53,13 @@ export default function EditSetPage({ params, }: { params: Promise<{ setId: stri
                 initialTitle={set.title}
                 initialDescription={set.description}
             />
+
+            <div className="inline-flex gap-2 mt-4 sm:mt-0" role="group">
+                <Link href={`/sets/${setId}`} className="mt-4 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500">
+                    Back
+                </Link>
+            </div>
+
             {error && <div className="mt-4 text-red-600">{error}</div>}
         </div>
     )

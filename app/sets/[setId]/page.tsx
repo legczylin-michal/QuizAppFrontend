@@ -2,17 +2,18 @@
 
 import { use, useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { getItems, createItem, deleteSet } from '@/app/lib/dal'
+import { getItems, createItem, deleteSet, getSet } from '@/app/lib/dal'
 import ItemForm from '@/app/ui/item-form'
 import { auth } from '@/app/lib/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
-import type { Item } from '@/app/lib/definitions'
+import type { Item, Set } from '@/app/lib/definitions'
 import Link from 'next/link'
 
 export default function ItemsPage({ params }: { params: Promise<{ setId: string }> }) {
     const { setId } = use(params)
     const router = useRouter()
 
+    const [set, setSet] = useState<Set | null>(null)
     const [items, setItems] = useState<any[]>([])
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -30,6 +31,23 @@ export default function ItemsPage({ params }: { params: Promise<{ setId: string 
         })
         return () => unsubscribe()
     }, [router])
+
+    useEffect(() => {
+        if (!authChecked) return
+
+        const fetchSet = async () => {
+            try {
+                const data = await getSet(setId)
+                setSet(data)
+                setError(null)
+            } catch (err) {
+                setError(err instanceof Error ? err.message : 'Failed to load set')
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchSet()
+    }, [setId, authChecked])
 
     // Data fetching after auth confirmation
     useEffect(() => {
@@ -78,16 +96,30 @@ export default function ItemsPage({ params }: { params: Promise<{ setId: string 
 
     return (
         <div className="p-4 max-w-3xl mx-auto">
-            <div>
-                <Link href={`/sets/${setId}/edit`}>Edit</Link>
-                
-                <button
-                    className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                    onClick={handleDelete}
-                >
-                    Delete Set
-                </button>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+                <div>
+                    <h1 className="text-2xl font-bold">{set?.title}</h1>
+                    <h3>{set?.description}</h3>
+                </div>
+
+                <div className="inline-flex gap-2 mt-4 sm:mt-0" role="group">
+                    <Link href={`/sets`} className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-500">
+                        Back
+                    </Link>
+
+                    <Link href={`/sets/${setId}/edit`} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        Edit
+                    </Link>
+
+                    <button
+                        className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                        onClick={handleDelete}
+                    >
+                        Delete
+                    </button>
+                </div>
             </div>
+
 
             <h1 className="text-2xl font-bold mb-6">Items Management</h1>
 
